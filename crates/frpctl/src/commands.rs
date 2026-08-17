@@ -57,6 +57,13 @@ pub enum Commands {
         #[arg(long)]
         config: Option<String>,
     },
+    /// Interactive configuration wizard
+    Init {
+        #[arg(value_enum)]
+        component: InstallComponent,
+        #[arg(short, long)]
+        output: Option<PathBuf>,
+    },
     /// Automated installation
     Install {
         #[arg(value_enum)]
@@ -257,6 +264,20 @@ pub async fn run_cli(cli: Cli) -> Result<()> {
                 println!("Result: Some checks FAILED. Please review the hints above.");
             }
         }
+        Commands::Init { component, output } => match component {
+            InstallComponent::Gateway => {
+                let path = output.unwrap_or_else(|| PathBuf::from("gateway.toml"));
+                crate::wizard::ConfigWizard::setup_gateway(path)?;
+            }
+            InstallComponent::Agent => {
+                let path = output.unwrap_or_else(|| PathBuf::from("agent.toml"));
+                crate::wizard::ConfigWizard::setup_agent(path)?;
+            }
+            InstallComponent::Controller => {
+                let path = output.unwrap_or_else(|| PathBuf::from("controller.toml"));
+                crate::wizard::ConfigWizard::setup_controller(path)?;
+            }
+        },
         Commands::Install { component, version, dir } => match component {
             InstallComponent::Gateway => {
                 Installer::install_gateway(&version, &dir).await?;

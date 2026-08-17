@@ -2,6 +2,7 @@ pub mod commands;
 pub mod doctor;
 pub mod http_client;
 pub mod installer;
+pub mod wizard;
 
 #[cfg(test)]
 mod tests {

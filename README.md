@@ -71,38 +71,59 @@ flowchart TD
 | **Gateway** | `frp-gateway` | Daemon installed on FRP Gateway servers. Manages `frps`, telemetry, and firewall rules |
 | **CLI** | `frpctl` | Unified administrator CLI and diagnostic utility |
 
+## Quick Setup Cheat Sheet — Where to Get Information
+
+Before starting, obtain these values:
+
+| Parameter | How to Get / Where to Find |
+|---|---|
+| **Pterodactyl Panel URL** | Base HTTPS address of your panel (e.g. `https://panel.example.com`). |
+| **Pterodactyl Application API Key** | In Pterodactyl: **Admin Panel** ──► **Application API** ──► **Create New** ──► Enable `Nodes (Read)`, `Servers (Read)`, `Allocations (Read)`. Key starts with `ptla_...`. |
+| **Pterodactyl Node ID** | In Pterodactyl: **Admin Panel** ──► **Nodes** ──► Click your node name. Look at the ID shown in the header/URL (e.g. `Singapore-01 (#1)` ──► Node ID is `1`). |
+| **Gateway Public IP** | On your Gateway VPS, run: `curl -s ifconfig.me`. |
+| **Secret Tokens** | Run `openssl rand -hex 32` in your terminal to generate 64-char random tokens. |
+
 ---
 
-## Quick Start
+## Quick Start (Direct Role-Based Installation)
 
-### 1. Start the Controller
-```bash
-# Generate configuration template
-frp-controller --config controller.toml
-
-# Run the controller
-frp-controller --config controller.toml
-```
-
-### 2. Install Gateway on Public Server
-```bash
-# Automated non-interactive install
-curl -fsSL https://raw.githubusercontent.com/UG88/frp-orchestrator/main/scripts/install-gateway.sh | sudo bash
-
-# Or via CLI
-sudo frpctl install gateway
-```
-
-### 3. Install Agent on Pterodactyl Node
+### 1. Central Controller Server
 ```bash
 # Automated installer
-curl -fsSL https://raw.githubusercontent.com/UG88/frp-orchestrator/main/scripts/install-agent.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/UG88/frp-orchestrator/main/scripts/install-controller.sh | sudo bash
 
-# Or via CLI
-sudo frpctl install agent
+# Run interactive configuration wizard
+frpctl init controller
+
+# Start service
+sudo systemctl enable --now frp-controller
 ```
 
-### 4. Verify System Health with `frpctl doctor`
+### 2. Public Gateway Server(s)
+```bash
+# Automated installer (sets up frps and hardened firewall)
+curl -fsSL https://raw.githubusercontent.com/UG88/frp-orchestrator/main/scripts/install-gateway.sh | sudo bash
+
+# Run interactive configuration wizard
+frpctl init gateway
+
+# Start service
+sudo systemctl enable --now frps
+```
+
+### 3. Pterodactyl Node Server(s) (Installed alongside Wings)
+```bash
+# Automated installer (sets up frpc and agent daemon)
+curl -fsSL https://raw.githubusercontent.com/UG88/frp-orchestrator/main/scripts/install-agent.sh | sudo bash
+
+# Run interactive configuration wizard
+frpctl init agent
+
+# Start services
+sudo systemctl enable --now frpc frp-agent
+```
+
+### 4. Verify Everything with `frpctl doctor`
 ```bash
 frpctl doctor
 ```

@@ -33,6 +33,23 @@ This document provides step-by-step instructions for deploying the FRP Orchestra
 
 ---
 
+## 0. Where to Get Each Configuration Parameter (Quick Cheat Sheet)
+
+Before installing, collect these values from your infrastructure:
+
+| Parameter | Example Value | Where to Find / How to Generate |
+|---|---|---|
+| **Pterodactyl URL** | `https://panel.example.com` | Your Pterodactyl web panel domain name. Must be reachable over HTTPS. |
+| **Pterodactyl Application API Key** | `ptla_abc12345...` | **Pterodactyl Admin Panel** ──► **Application API** ──► **Create New** ──► Set permissions: `Nodes (Read)`, `Servers (Read)`, `Allocations (Read)`. *Note: Must be an Application API Key, not an Account API key.* |
+| **Pterodactyl Node ID** | `1` | **Pterodactyl Admin Panel** ──► **Nodes** ──► Click on your node. Look at the title or URL (`/admin/nodes/view/1` ──► Node ID is `1`). |
+| **Gateway Public IP** | `3.108.50.20` | On your Gateway VPS, run: `curl -s ifconfig.me`. |
+| **Gateway Secret Token** | `9a8f7c6e...` | Run `openssl rand -hex 32` on your terminal to generate a secure 64-character token. Shared between Gateway and Controller. |
+| **Controller Master API Key** | `4b3c2d1e...` | Run `openssl rand -hex 32` to generate an API key used by CLI (`frpctl`) and Agents. |
+| **Cloudflare API Token** *(Optional)* | `CF_API_...` | **Cloudflare Dashboard** ──► **My Profile** ──► **API Tokens** ──► **Create Token** ──► Choose **Edit zone DNS** template. |
+| **Cloudflare Zone ID** *(Optional)* | `023e105f4e...` | **Cloudflare Dashboard** ──► Click your domain ──► Scroll down right sidebar to **API** section ──► Copy **Zone ID**. |
+
+---
+
 ## 1. Controller Deployment
 
 The Controller is the central orchestrator and single source of truth. It manages gateway port pools, monitors Pterodactyl allocations, synchronizes DNS records, and serves desired state to FRP agents.

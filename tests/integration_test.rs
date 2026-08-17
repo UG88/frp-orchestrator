@@ -232,3 +232,89 @@ async fn test_duplicate_prevention_and_idempotency() {
     let all_maps_after = db.list_mappings().unwrap();
     assert_eq!(all_maps_after.len(), 2);
 }
+
+#[tokio::test]
+async fn test_unlimited_nodes_identical_local_ports_no_collision() {
+    let db = Database::open_in_memory().unwrap();
+    let port_mgr = PortManager::new(db.clone());
+
+    let gw = Gateway {
+        id: "gw-main".to_string(),
+        region: "global".to_string(),
+        public_ip: "3.108.50.20".to_string(),
+        control_port: 7000,
+        tcp_port_range_start: 30000,
+        tcp_port_range_end: 30100,
+        udp_port_range_start: 30000,
+        udp_port_range_end: 30100,
+        reserved_ports: vec![30000],
+        is_healthy: true,
+        last_heartbeat: None,
+        token: "gw-token".to_string(),
+        created_at: chrono::Utc::now(),
+    };
+    db.upsert_gateway(&gw).unwrap();
+
+    let dns = Arc::new(MockDnsProvider::default());
+    let proto_detector = Arc::new(ProtocolDetector::new(HashMap::new()));
+    let alloc_mgr = AllocationManager::new(
+        db.clone(),
+        port_mgr.clone(),
+        proto_detector,
+        dns.clone(),
+        Some("mc.example.com".to_string()),
+    );
+
+    let num_nodes = 20;
+    let mut allocated_gateway_ports = std::collections::HashSet::new();
+
+    for i in 1..=num_nodes {
+        let node_id = format!("node-{:02}", i);
+        let node = Node {
+            id: node_id.clone(),
+            name: format!("Pterodactyl Node {}", i),
+            pterodactyl_node_id: i,
+            assigned_gateway_id: "gw-main".to_string(),
+            local_ip: format!("10.10.0.{}", i),
+            is_healthy: true,
+            last_heartbeat: None,
+            agent_token: format!("token-{}", i),
+            created_at: chrono::Utc::now(),
+        };
+        db.upsert_node(&node).unwrap();
+
+        // Every single node uses local port 25565!
+        let alloc = Allocation {
+            id: format!("alloc-node-{}", i),
+            node_id: node_id.clone(),
+            server_id: Some(format!("srv-{}", i)),
+            server_name: Some(format!("Server on Node {}", i)),
+            pterodactyl_allocation_id: 1000 + i,
+            local_ip: format!("10.10.0.{}", i),
+            local_port: 25565, // Identical across all nodes
+            protocol: Protocol::Tcp,
+            custom_alias: None,
+            status: AllocationStatus::Pending,
+            created_at: chrono::Utc::now(),
+            updated_at: chrono::Utc::now(),
+        };
+        db.upsert_allocation(&alloc).unwrap();
+
+        let mapping = alloc_mgr.provision_mapping(&node, &alloc, None, None).await.unwrap();
+
+        // Assert that the public port has never been seen before
+        assert!(!allocated_gateway_ports.contains(&mapping.gateway_port));
+        allocated_gateway_ports.insert(mapping.gateway_port);
+
+        // Verify that this node agent only gets its own mapping
+        let node_mappings = db.list_mappings_for_node(&node_id).unwrap();
+        assert_eq!(node_mappings.len(), 1);
+        assert_eq!(node_mappings[0].target_ip, format!("10.10.0.{}", i));
+        assert_eq!(node_mappings[0].target_port, 25565);
+    }
+
+    // Assert that all 20 nodes got 20 distinct ports
+    assert_eq!(allocated_gateway_ports.len(), num_nodes as usize);
+    let all_mappings = db.list_mappings().unwrap();
+    assert_eq!(all_mappings.len(), num_nodes as usize);
+}

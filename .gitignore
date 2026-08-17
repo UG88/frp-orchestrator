@@ -3,6 +3,9 @@
 **/*.rs.bk
 Cargo.lock
 
+# AI system directory (local only)
+/.ai/
+
 # Upstream FRP source clone (ignored as requested)
 /frp/
 

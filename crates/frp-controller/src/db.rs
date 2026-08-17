@@ -778,6 +778,7 @@ impl Database {
 
     pub fn delete_mapping(&self, id: &str) -> Result<()> {
         let conn = self.conn.lock();
+        conn.execute("DELETE FROM allocated_ports WHERE mapping_id = ?1", params![id])?;
         conn.execute("DELETE FROM mappings WHERE id = ?1", params![id])?;
         Ok(())
     }

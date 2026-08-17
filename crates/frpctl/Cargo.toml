@@ -1,0 +1,25 @@
+[package]
+name = "frpctl"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "frpctl"
+path = "src/main.rs"
+
+[dependencies]
+frp-shared = { path = "../frp-shared" }
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+toml.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+anyhow.workspace = true
+thiserror.workspace = true
+uuid.workspace = true
+chrono.workspace = true
+reqwest.workspace = true
+clap.workspace = true

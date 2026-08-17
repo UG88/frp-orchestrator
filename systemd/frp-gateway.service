@@ -1,0 +1,27 @@
+[Unit]
+Description=FRP Gateway Node Management Daemon
+Documentation=https://github.com/example/frp-orchestrator
+After=network.target network-online.target frps.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=frp
+Group=frp
+WorkingDirectory=/opt/frp
+ExecStart=/usr/local/bin/frp-gateway --config /etc/frp-gateway/gateway.toml
+Restart=always
+RestartSec=5s
+LimitNOFILE=65536
+
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/opt/frp
+PrivateTmp=yes
+NoNewPrivileges=yes
+
+# Environment file with secrets
+EnvironmentFile=-/etc/frp-gateway/gateway.env
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,30 @@
+[Unit]
+Description=FRP Gateway Orchestrator Controller
+Documentation=https://github.com/example/frp-orchestrator
+After=network.target network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=frp
+Group=frp
+WorkingDirectory=/var/lib/frp-orchestrator
+ExecStart=/usr/local/bin/frp-controller --config /etc/frp-orchestrator/controller.toml
+Restart=always
+RestartSec=5s
+LimitNOFILE=65536
+
+# Systemd Hardening
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/frp-orchestrator
+PrivateTmp=yes
+NoNewPrivileges=yes
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+
+# Environment file with secrets
+EnvironmentFile=-/etc/frp-orchestrator/controller.env
+
+[Install]
+WantedBy=multi-user.target

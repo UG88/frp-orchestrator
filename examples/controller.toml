@@ -1,0 +1,69 @@
+# FRP Central Orchestrator Controller Configuration
+# Example production-ready template
+
+listen_addr = "0.0.0.0:8080"
+api_key = "ENV:CONTROLLER_API_KEY"
+database_path = "/var/lib/frp-orchestrator/controller.db"
+reconciliation_interval_secs = 30
+
+[pterodactyl]
+url = "https://panel.example.com"
+api_key = "ENV:PTERODACTYL_API_KEY"
+sync_interval_secs = 30
+auto_expose_default = true
+
+[pterodactyl.egg_protocol_overrides]
+# Custom egg mappings if needed
+"geyser-standalone" = "both"
+"bedrock-dedicated" = "udp"
+"paper-java" = "tcp"
+
+[dns]
+default_domain = "mc.example.com"
+
+[dns.cloudflare]
+# Disabled by default. Set to true if you want automated Cloudflare DNS A-record provisioning.
+enabled = false
+api_token = "ENV:CLOUDFLARE_API_TOKEN"
+zone_id = "023e105f4ecef8ad9ca31a8372d0c353"
+proxied = false
+ttl = 1
+
+[[gateways]]
+id = "gw-sg-01"
+region = "singapore"
+public_ip = "198.51.100.10"
+control_port = 7000
+token = "ENV:FRP_GATEWAY_TOKEN"
+tls_enable = true
+dashboard_port = 7500
+
+[gateways.tcp_port_range]
+start = 30000
+end = 40000
+
+[gateways.udp_port_range]
+start = 30000
+end = 40000
+
+# Reserved ports to exclude from player allocations
+gateways.reserved_ports = [30000, 30001]
+
+[[gateways]]
+id = "gw-in-01"
+region = "india"
+public_ip = "203.0.113.50"
+control_port = 7000
+token = "ENV:FRP_GATEWAY_TOKEN"
+tls_enable = true
+dashboard_port = 7500
+
+[gateways.tcp_port_range]
+start = 30000
+end = 40000
+
+[gateways.udp_port_range]
+start = 30000
+end = 40000
+
+gateways.reserved_ports = [30000]

@@ -1,0 +1,32 @@
+# Rust build artifacts
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# Upstream FRP source clone (ignored as requested)
+/frp/
+
+# SQLite databases & temp files
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+controller.db*
+
+# Environment secrets and private configuration
+.env
+*.env
+!controller.env.example
+!agent.env.example
+
+# Logs and runtime artifacts
+*.log
+logs/
+
+# OS / IDE metadata
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~

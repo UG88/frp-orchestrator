@@ -12,7 +12,7 @@ Thank you for your interest in contributing to the FRP Gateway Orchestrator!
 
 ### Clone and Build
 ```bash
-git clone https://github.com/example/frp-orchestrator.git
+git clone https://github.com/UG88/frp-orchestrator.git
 cd frp-orchestrator
 
 # Build all workspace crates

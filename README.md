@@ -1,6 +1,6 @@
 # FRP Orchestrator — Automated Gateway System for Pterodactyl & Minecraft
 
-[![CI](https://github.com/example/frp-orchestrator/actions/workflows/ci.yml/badge.svg)](https://github.com/example/frp-orchestrator/actions)
+[![CI](https://github.com/UG88/frp-orchestrator/actions/workflows/ci.yml/badge.svg)](https://github.com/UG88/frp-orchestrator/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **FRP Orchestrator** is a production-ready, zero-downtime gateway orchestration system designed specifically for Minecraft hosting providers operating on [Pterodactyl](https://pterodactyl.io).
@@ -87,7 +87,7 @@ frp-controller --config controller.toml
 ### 2. Install Gateway on Public Server
 ```bash
 # Automated non-interactive install
-curl -fsSL https://raw.githubusercontent.com/example/frp-orchestrator/main/scripts/install-gateway.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/UG88/frp-orchestrator/main/scripts/install-gateway.sh | sudo bash
 
 # Or via CLI
 sudo frpctl install gateway
@@ -96,7 +96,7 @@ sudo frpctl install gateway
 ### 3. Install Agent on Pterodactyl Node
 ```bash
 # Automated installer
-curl -fsSL https://raw.githubusercontent.com/example/frp-orchestrator/main/scripts/install-agent.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/UG88/frp-orchestrator/main/scripts/install-agent.sh | sudo bash
 
 # Or via CLI
 sudo frpctl install agent

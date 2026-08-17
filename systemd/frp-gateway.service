@@ -1,6 +1,6 @@
 [Unit]
 Description=FRP Gateway Node Management Daemon
-Documentation=https://github.com/example/frp-orchestrator
+Documentation=https://github.com/UG88/frp-orchestrator
 After=network.target network-online.target frps.service
 Wants=network-online.target
 

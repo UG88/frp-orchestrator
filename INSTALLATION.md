@@ -135,7 +135,7 @@ The Gateway is installed on dedicated servers located in each target region (e.g
 
 ### Automated Installation
 ```bash
-curl -fsSL https://raw.githubusercontent.com/example/frp-orchestrator/main/scripts/install-gateway.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/UG88/frp-orchestrator/main/scripts/install-gateway.sh | sudo bash
 ```
 
 ### Manual Installation
@@ -185,7 +185,7 @@ The Agent is installed on every Pterodactyl node running Wings.
 
 ### Automated Installation
 ```bash
-curl -fsSL https://raw.githubusercontent.com/example/frp-orchestrator/main/scripts/install-agent.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/UG88/frp-orchestrator/main/scripts/install-agent.sh | sudo bash
 ```
 
 ### Configuration `/etc/frp-agent/agent.toml`:

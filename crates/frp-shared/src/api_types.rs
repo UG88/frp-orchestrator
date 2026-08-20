@@ -51,6 +51,8 @@ pub struct AgentDesiredProxy {
     pub gateway_control_port: u16,
     pub gateway_token: String,
     pub fqdn: Option<String>,
+    #[serde(default)]
+    pub proxy_protocol_version: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

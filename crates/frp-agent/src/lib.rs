@@ -66,6 +66,7 @@ mod tests {
                 gateway_control_port: 7000,
                 gateway_token: "secret".to_string(),
                 fqdn: None,
+                proxy_protocol_version: None,
             },
             AgentDesiredProxy {
                 proxy_name: "mc_server_2_geyser".to_string(),
@@ -79,6 +80,7 @@ mod tests {
                 gateway_control_port: 7000,
                 gateway_token: "secret".to_string(),
                 fqdn: None,
+                proxy_protocol_version: Some("v2".to_string()),
             },
         ];
 

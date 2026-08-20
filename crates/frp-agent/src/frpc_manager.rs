@@ -150,6 +150,10 @@ includes = ["{conf_d_glob}"]
     /// Render individual proxy TOML block.
     fn render_proxy_toml(&self, proxy: &AgentDesiredProxy) -> String {
         let mut out = String::new();
+        let pp_line = match &proxy.proxy_protocol_version {
+            Some(v) if v == "v1" || v == "v2" => format!("transport.proxyProtocolVersion = \"{}\"\n", v),
+            _ => String::new(),
+        };
 
         if proxy.protocol.is_tcp() {
             let tcp_name = format!("{}_tcp", proxy.proxy_name);
@@ -160,12 +164,13 @@ type = "tcp"
 localIP = "{local_ip}"
 localPort = {local_port}
 remotePort = {remote_port}
-
+{pp_line}
 "#,
                 name = tcp_name,
                 local_ip = proxy.local_ip,
                 local_port = proxy.local_port,
-                remote_port = proxy.remote_port
+                remote_port = proxy.remote_port,
+                pp_line = pp_line
             ));
         }
 
@@ -178,12 +183,13 @@ type = "udp"
 localIP = "{local_ip}"
 localPort = {local_port}
 remotePort = {remote_port}
-
+{pp_line}
 "#,
                 name = udp_name,
                 local_ip = proxy.local_ip,
                 local_port = proxy.local_port,
-                remote_port = proxy.remote_port
+                remote_port = proxy.remote_port,
+                pp_line = pp_line
             ));
         }
 

@@ -74,6 +74,7 @@ pub async fn get_desired_state(
             gateway_control_port: gateway.control_port,
             gateway_token: gateway.token.clone(),
             fqdn: m.fqdn,
+            proxy_protocol_version: None,
         })
         .collect();
 

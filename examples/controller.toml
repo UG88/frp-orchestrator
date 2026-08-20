@@ -6,6 +6,11 @@ api_key = "ENV:CONTROLLER_API_KEY"
 database_path = "/var/lib/frp-orchestrator/controller.db"
 reconciliation_interval_secs = 30
 
+# Real Client IP Forwarding (HAProxy PROXY Protocol)
+# Set to "v2" to forward real player IPs to Paper (with ProxyProtocol plugin) or Velocity.
+# Options: "v2", "v1", or omit/comment out to disable.
+default_proxy_protocol = "v2"
+
 [pterodactyl]
 url = "https://panel.example.com"
 api_key = "ENV:PTERODACTYL_API_KEY"

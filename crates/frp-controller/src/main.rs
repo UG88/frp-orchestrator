@@ -46,6 +46,7 @@ async fn main() -> Result<()> {
             api_key: "ENV:CONTROLLER_API_KEY".to_string(),
             database_path: "controller.db".to_string(),
             reconciliation_interval_secs: 30,
+            default_proxy_protocol: Some("v2".to_string()),
             pterodactyl: frp_shared::config::PterodactylConfig {
                 url: "https://panel.example.com".to_string(),
                 api_key: "ENV:PTERODACTYL_API_KEY".to_string(),
@@ -176,6 +177,7 @@ async fn main() -> Result<()> {
         allocation_mgr,
         reconciler,
         api_key: config.resolved_api_key(),
+        default_proxy_protocol: config.default_proxy_protocol.clone(),
         start_time: Instant::now(),
     };
 

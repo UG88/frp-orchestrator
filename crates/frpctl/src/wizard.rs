@@ -134,6 +134,7 @@ impl ConfigWizard {
             api_key,
             database_path: "/var/lib/frp-orchestrator/controller.db".to_string(),
             reconciliation_interval_secs: 30,
+            default_proxy_protocol: Some("v2".to_string()),
             pterodactyl: PterodactylConfig {
                 url: ptero_url,
                 api_key: ptero_api_key,

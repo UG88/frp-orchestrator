@@ -29,6 +29,7 @@ pub struct AppState {
     pub allocation_mgr: AllocationManager,
     pub reconciler: Reconciler,
     pub api_key: String,
+    pub default_proxy_protocol: Option<String>,
     pub start_time: Instant,
 }
 

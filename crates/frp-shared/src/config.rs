@@ -199,6 +199,8 @@ pub struct ControllerConfig {
     pub database_path: String,
     #[serde(default = "default_reconciliation_interval")]
     pub reconciliation_interval_secs: u64,
+    #[serde(default)]
+    pub default_proxy_protocol: Option<String>,
     pub pterodactyl: PterodactylConfig,
     #[serde(default)]
     pub dns: Option<DnsConfig>,

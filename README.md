@@ -45,10 +45,9 @@ flowchart TD
 
 ---
 
-## Key Features
-
+- **Native Real Player IP Forwarding**: Supports both **WireGuard Transparent Kernel Ingress** (native real player IPs with zero plugins across all game flavors) and **FRP PROXY Protocol v2**.
 - **Zero-Downtime Hot Reloading**: Uses FRP's multi-file configuration (`conf.d/*.toml`) and admin reload API. Adding, modifying, or removing a server never interrupts existing active Minecraft sessions.
-- **Hidden Node Topology**: Players connect to the FRP Gateway IP or FQDN. The backend node's public IP remains completely unexposed.
+- **Hidden Node Topology**: Players connect to the Gateway IP or FQDN. The backend node's public IP remains completely unexposed.
 - **Protocol Intelligence**:
   - `tcp`: Standard Minecraft Java Edition.
   - `udp`: Bedrock standalone / PocketMine.
@@ -183,6 +182,7 @@ frpctl health
 
 ## Documentation
 
+- [**WIREGUARD.md**](file:///WIREGUARD.md) — Transparent kernel tunneling setup guide (100% native real player IPs, zero plugins).
 - [**INSTALLATION.md**](file:///INSTALLATION.md) — Complete setup guide for Gateways, Agents, Controllers, and Firewalls.
 - [**ARCHITECTURE.md**](file:///ARCHITECTURE.md) — Deep architectural dive, reconciliation flow, and zero-downtime mechanics.
 - [**CONFIGURATION.md**](file:///CONFIGURATION.md) — Complete configuration specification for all components.

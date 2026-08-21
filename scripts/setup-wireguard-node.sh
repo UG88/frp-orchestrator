@@ -15,10 +15,15 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-# 1. Install WireGuard and IPRoute2
+# 1. Clean up broken third-party apt repos and install WireGuard
 echo "[+] Installing WireGuard and networking tools..."
 if command -v apt-get >/dev/null 2>&1; then
     export DEBIAN_FRONTEND=noninteractive
+    rm -f /etc/apt/sources.list.d/*kali*.list /etc/apt/sources.list.d/*rolling*.list 2>/dev/null || true
+    if [[ -f /etc/apt/sources.list ]]; then
+        sed -i '/kali\.org/d' /etc/apt/sources.list 2>/dev/null || true
+        sed -i '/kali\.download/d' /etc/apt/sources.list 2>/dev/null || true
+    fi
     apt-get update -qq || true
     apt-get install -y -qq wireguard wireguard-tools iproute2 curl || apt-get install -y wireguard wireguard-tools iproute2 curl
 elif command -v dnf >/dev/null 2>&1; then
@@ -28,16 +33,30 @@ elif command -v yum >/dev/null 2>&1; then
     yum install -y wireguard-tools iproute curl >/dev/null 2>&1 || true
 fi
 
-# 2. Interactive prompt for Gateway credentials if not provided as env vars
+# 2. Interactive prompt for Gateway credentials (reads from /dev/tty when run via curl pipe)
 GW_ENDPOINT="${GW_ENDPOINT:-}"
 GW_PUBLIC_KEY="${GW_PUBLIC_KEY:-}"
 
 if [[ -z "$GW_ENDPOINT" ]]; then
-    read -r -p "Enter Gateway Public IP (e.g. 3.108.50.20): " GW_ENDPOINT
+    if [[ -e /dev/tty ]]; then
+        read -r -p "Enter Gateway Public IP (e.g. 3.108.50.20): " GW_ENDPOINT </dev/tty
+    else
+        read -r -p "Enter Gateway Public IP (e.g. 3.108.50.20): " GW_ENDPOINT
+    fi
 fi
 
 if [[ -z "$GW_PUBLIC_KEY" ]]; then
-    read -r -p "Enter Gateway Public Key (from Gateway setup): " GW_PUBLIC_KEY
+    if [[ -e /dev/tty ]]; then
+        read -r -p "Enter Gateway Public Key (from Gateway setup): " GW_PUBLIC_KEY </dev/tty
+    else
+        read -r -p "Enter Gateway Public Key (from Gateway setup): " GW_PUBLIC_KEY
+    fi
+fi
+
+if [[ -z "$GW_ENDPOINT" || -z "$GW_PUBLIC_KEY" ]]; then
+    echo "[-] Error: Gateway Public IP and Gateway Public Key cannot be empty!" >&2
+    echo "    Please run: GW_ENDPOINT=<IP> GW_PUBLIC_KEY=<KEY> sudo bash setup-wireguard-node.sh" >&2
+    exit 1
 fi
 
 # 3. Generate Node cryptographic keys

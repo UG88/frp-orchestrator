@@ -15,10 +15,15 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-# 1. Install WireGuard and IPTables
+# 1. Clean up broken third-party apt repos and install WireGuard
 echo "[+] Installing WireGuard and networking tools..."
 if command -v apt-get >/dev/null 2>&1; then
     export DEBIAN_FRONTEND=noninteractive
+    rm -f /etc/apt/sources.list.d/*kali*.list /etc/apt/sources.list.d/*rolling*.list 2>/dev/null || true
+    if [[ -f /etc/apt/sources.list ]]; then
+        sed -i '/kali\.org/d' /etc/apt/sources.list 2>/dev/null || true
+        sed -i '/kali\.download/d' /etc/apt/sources.list 2>/dev/null || true
+    fi
     apt-get update -qq || true
     apt-get install -y -qq wireguard wireguard-tools iptables ufw curl || apt-get install -y wireguard wireguard-tools iptables ufw curl
 elif command -v dnf >/dev/null 2>&1; then

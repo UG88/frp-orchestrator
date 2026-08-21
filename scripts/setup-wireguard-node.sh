@@ -85,7 +85,7 @@ PostDown = ip rule del from 10.200.0.2 table 200 || true; ip route del default v
 [Peer]
 PublicKey = $GW_PUBLIC_KEY
 Endpoint = $GW_ENDPOINT:51820
-AllowedIPs = 10.200.0.0/24, 0.0.0.0/0
+AllowedIPs = 10.200.0.0/24
 PersistentKeepalive = 25
 EOF
 

@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# WireGuard Gateway Server Installer (Transparent Tunnel Hub)
+# Forwards Minecraft Game Ports (TCP & UDP) to Backend Nodes preserving real player IPs
+# ==============================================================================
+
+set -euo pipefail
+
+echo "=========================================================="
+echo " Starting WireGuard Gateway Installation (Transparent Hub)"
+echo "=========================================================="
+
+if [[ $EUID -ne 0 ]]; then
+   echo "[-] Error: This script must be run as root (or with sudo)." >&2
+   exit 1
+fi
+
+# 1. Install WireGuard and IPTables
+echo "[+] Installing WireGuard and networking tools..."
+if command -v apt-get >/dev/null 2>&1; then
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update -qq
+    apt-get install -y -qq wireguard wireguard-tools iptables ufw curl >/dev/null 2>&1
+elif command -v dnf >/dev/null 2>&1; then
+    dnf install -y wireguard-tools iptables curl >/dev/null 2>&1
+elif command -v yum >/dev/null 2>&1; then
+    yum install -y epel-release >/dev/null 2>&1 || true
+    yum install -y wireguard-tools iptables curl >/dev/null 2>&1
+fi
+
+# 2. Enable Kernel IP Forwarding
+echo "[+] Enabling Linux kernel packet forwarding..."
+echo "net.ipv4.ip_forward=1" > /etc/sysctl.d/99-wireguard.conf
+echo "net.ipv4.conf.all.forwarding=1" >> /etc/sysctl.d/99-wireguard.conf
+sysctl --system >/dev/null 2>&1 || sysctl -w net.ipv4.ip_forward=1
+
+# 3. Detect primary network interface (e.g. eth0, ens5)
+DEFAULT_IFACE=$(ip route show default 2>/dev/null | awk '{print $5}' | head -n1)
+DEFAULT_IFACE="${DEFAULT_IFACE:-eth0}"
+echo "[+] Detected primary public interface: $DEFAULT_IFACE"
+
+# 4. Generate Gateway cryptographic keys
+mkdir -p /etc/wireguard
+chmod 700 /etc/wireguard
+
+if [[ ! -f /etc/wireguard/gateway_private.key ]]; then
+    echo "[+] Generating WireGuard cryptographic keypair..."
+    wg genkey | tee /etc/wireguard/gateway_private.key | wg pubkey > /etc/wireguard/gateway_public.key
+    chmod 600 /etc/wireguard/gateway_private.key
+fi
+
+GW_PRIVATE_KEY=$(cat /etc/wireguard/gateway_private.key)
+GW_PUBLIC_KEY=$(cat /etc/wireguard/gateway_public.key)
+PUBLIC_IP=$(curl -s -4 ifconfig.me || curl -s -4 icanhazip.com || echo "YOUR_GATEWAY_PUBLIC_IP")
+
+# 5. Create WireGuard configuration
+# Forwards ports 25565-25600 and 30000-40000 (TCP & UDP) across the tunnel to Node 1 (10.200.0.2)
+cat << EOF > /etc/wireguard/wg0.conf
+[Interface]
+Address = 10.200.0.1/24
+ListenPort = 51820
+PrivateKey = $GW_PRIVATE_KEY
+
+# Forwarding Rules (DNAT without Masquerading -> Real Player IPs Preserved!)
+PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT
+PostUp = iptables -t nat -A PREROUTING -i $DEFAULT_IFACE -p tcp -m multiport --dports 25565:25600,30000:40000 -j DNAT --to-destination 10.200.0.2
+PostUp = iptables -t nat -A PREROUTING -i $DEFAULT_IFACE -p udp -m multiport --dports 25565:25600,30000:40000 -j DNAT --to-destination 10.200.0.2
+
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT
+PostDown = iptables -t nat -D PREROUTING -i $DEFAULT_IFACE -p tcp -m multiport --dports 25565:25600,30000:40000 -j DNAT --to-destination 10.200.0.2
+PostDown = iptables -t nat -D PREROUTING -i $DEFAULT_IFACE -p udp -m multiport --dports 25565:25600,30000:40000 -j DNAT --to-destination 10.200.0.2
+EOF
+
+# 6. Allow ports in UFW if UFW is active
+if command -v ufw >/dev/null 2>&1 && ufw status | grep -q "Status: active"; then
+    echo "[+] Configuring UFW firewall rules..."
+    ufw allow 51820/udp comment 'WireGuard Control Port' >/dev/null 2>&1 || true
+    ufw allow 25565:25600/tcp comment 'Minecraft Standard Ports' >/dev/null 2>&1 || true
+    ufw allow 25565:25600/udp comment 'Bedrock Standard Ports' >/dev/null 2>&1 || true
+    ufw allow 30000:40000/tcp comment 'Minecraft Range TCP' >/dev/null 2>&1 || true
+    ufw allow 30000:40000/udp comment 'Minecraft Range UDP' >/dev/null 2>&1 || true
+fi
+
+# 7. Start WireGuard service
+systemctl enable --now wg-quick@wg0
+systemctl restart wg-quick@wg0
+
+echo "=========================================================="
+echo " [✓] WireGuard Gateway is ACTIVE & LISTENING on port 51820!"
+echo "=========================================================="
+echo ""
+echo " Save these Gateway details for setting up your Node:"
+echo "   Gateway Public IP: $PUBLIC_IP"
+echo "   Gateway Public Key: $GW_PUBLIC_KEY"
+echo "   Gateway WireGuard Port: 51820"
+echo "=========================================================="

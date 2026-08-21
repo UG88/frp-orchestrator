@@ -19,13 +19,13 @@ fi
 echo "[+] Installing WireGuard and networking tools..."
 if command -v apt-get >/dev/null 2>&1; then
     export DEBIAN_FRONTEND=noninteractive
-    apt-get update -qq
-    apt-get install -y -qq wireguard wireguard-tools iptables ufw curl >/dev/null 2>&1
+    apt-get update -qq || true
+    apt-get install -y -qq wireguard wireguard-tools iptables ufw curl || apt-get install -y wireguard wireguard-tools iptables ufw curl
 elif command -v dnf >/dev/null 2>&1; then
-    dnf install -y wireguard-tools iptables curl >/dev/null 2>&1
+    dnf install -y wireguard-tools iptables curl >/dev/null 2>&1 || true
 elif command -v yum >/dev/null 2>&1; then
     yum install -y epel-release >/dev/null 2>&1 || true
-    yum install -y wireguard-tools iptables curl >/dev/null 2>&1
+    yum install -y wireguard-tools iptables curl >/dev/null 2>&1 || true
 fi
 
 # 2. Enable Kernel IP Forwarding

@@ -13,13 +13,15 @@ Use this skill whenever working on, debugging, configuring, deploying, or testin
 
 | Task | Command |
 |---|---|
-| **Interactive Master Manager** | `wirenet` |
+| **Setup Gateway VPS (Hub)** | `wirenet setup gateway` |
+| **Setup Node VPS (Spoke)** | `wirenet setup node --gateway <IP> --gateway-key <KEY>` |
 | **Live Zero-Flicker Telemetry TUI** | `wirenet tui` |
 | **6-Point System Doctor & Self-Healing** | `wirenet doctor` |
 | **Active Tunnel Status & Latency** | `wirenet status` |
 | **Anti-DDoS Shield (Standard/Strict/Off)**| `wirenet shield [standard\|strict\|off]` |
-| **Rust Daemon Background Management** | `wirenet daemon [install\|status\|start\|stop]` |
-| **1-Click Sync from GitHub** | `wirenet update` |
+| **Check for Updates** | `wirenet check-update` |
+| **1-Click Self-Updater** | `wirenet update` |
+| **100% Deep Uninstaller** | `wirenet uninstall` |
 
 ---
 
@@ -41,14 +43,7 @@ Use this skill whenever working on, debugging, configuring, deploying, or testin
 
 ---
 
-## 🔍 Instant Troubleshooting Commands
-
-### Gateway Diagnostic & Auto-Repair:
+## 🔍 1-Click System Doctor & Self-Healing:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/UG88/wirenet/main/scripts/troubleshoot-gateway.sh | sudo bash
-```
-
-### Node Diagnostic & Auto-Repair:
-```bash
-curl -fsSL https://raw.githubusercontent.com/UG88/wirenet/main/scripts/troubleshoot-node.sh | sudo bash
+wirenet doctor
 ```

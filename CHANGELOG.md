@@ -4,6 +4,18 @@ All notable changes to the **WireNet** project are documented in this file.
 
 ---
 
+## [v2.0.0] - 2026-08-23
+
+### 🦀 100% Pure Rust Architecture (`wirenet` Standalone Binary)
+- **Unified Engine**: Converted all 12 legacy shell scripts and managers into native, memory-safe Rust modules.
+- **WireGuard Provisioning**: Added native key generation and configuration engine in `wirenet setup gateway` and `wirenet setup node`.
+- **System Doctor**: Built-in 6-point self-healing diagnostic engine (`wirenet doctor`).
+- **Self-Updater**: Added 1-click update and check-update commands (`wirenet update`, `wirenet check-update`).
+- **Deep Cleaner**: Built-in 100% system uninstaller (`wirenet uninstall`).
+- **Script Cleanup**: Permanently deleted all legacy shell scripts from the codebase.
+
+---
+
 ## [v1.3.0] - 2026-08-22
 
 ### 🦀 Rust Tokio Ingress Daemon (`wirenet-daemon`)

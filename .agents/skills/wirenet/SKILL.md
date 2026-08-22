@@ -17,6 +17,7 @@ Use this skill whenever working on, debugging, configuring, deploying, or testin
 | **Setup Node VPS (Spoke)** | `wirenet setup node --gateway <IP> --gateway-key <KEY>` |
 | **Live Zero-Flicker Telemetry TUI** | `wirenet tui` |
 | **6-Point System Doctor & Self-Healing** | `wirenet doctor` |
+| **Apply Real IP Routing In-Place** | `wirenet apply` |
 | **Active Tunnel Status & Latency** | `wirenet status` |
 | **Anti-DDoS Shield (Standard/Strict/Off)**| `wirenet shield [standard\|strict\|off]` |
 | **Check for Updates** | `wirenet check-update` |

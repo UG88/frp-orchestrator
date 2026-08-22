@@ -9,7 +9,6 @@ All notable changes to the **WireNet** project are documented in this file.
 ### 🦀 Rust Tokio Ingress Daemon (`wirenet-daemon`)
 - **Async Tokio Engine**: Added memory-safe async ingress server on control port `:9000` and game ports `:25565-25700`.
 - **Anti-DDoS Shield**: Implemented DashMap-backed per-IP token bucket rate limiting with sub-2µs connection drop times.
-- **PROXY Protocol v2**: Implemented binary encoder for injecting genuine client IPv4 headers.
 - **Docker Event Watcher**: Added native asynchronous observer on `/var/run/docker.sock` for dynamic container port discovery.
 
 ### 📊 Zero-Flicker Live Streaming TUI (`wirenet tui`)
@@ -17,11 +16,11 @@ All notable changes to the **WireNet** project are documented in this file.
 - **Live Real Packet Tracking**: Connected live sparklines and load gauges directly to `/proc/net/dev` and `/sys/class/net/wg0/statistics/`.
 - **Real-Time Client IP Sniffer**: Added live parser for `/proc/net/tcp` and `/proc/net/nf_conntrack` displaying genuine player IP addresses in a structured table.
 
-### 🛡️ Networking & Tunneling Enhancements
+### 🛡️ Pure Method 1 Zero-Plugin Kernel-Level Routing
+- **100% Zero Plugins**: Completely standardized on Pure Linux Kernel Layer-3 Transparent Routing with `CONNMARK (0x1)` and Policy Routing `table 100`.
+- **Wiped Method 2**: Completely removed all PROXY Protocol v2 and proxy plugin requirements.
 - **100% Backend Node IP Invisibility**: Added kernel `DROP` rules on `eth0` for game ports `25565:25700` and `30000:40000`.
-- **Symmetrical WireGuard Return Routing**: Applied `MASQUERADE` across `wg0` on Gateway to guarantee zero packet loss across cloud providers (AWS, DigitalOcean, Hetzner).
 - **Instant 0ms Local IP Detection**: Eliminated blocking external `ifconfig.me` calls across all scripts with instant Linux kernel routing table inspection (`ip route get 1.1.1.1`).
-- **Port Collision Protection**: Eliminated `EADDRINUSE` conflicts by orchestrating mutual exclusivity between `rinetd`, `haproxy`, and `wirenet-daemon`.
 
 ### 📚 Knowledge Base & Customizations
 - **Rebuilt `.ai/` Knowledge Architecture**: Added comprehensive reference docs (`architecture.md`, `real-ip-mechanics.md`, `pterodactyl.md`, `troubleshooting.md`, `security.md`, `memory.md`, and ADRs).

@@ -18,6 +18,7 @@ Use this skill whenever working on, debugging, configuring, deploying, or testin
 | **Live Zero-Flicker Telemetry TUI** | `wirenet tui` |
 | **6-Point System Doctor & Self-Healing** | `wirenet doctor` |
 | **Apply Real IP Routing In-Place** | `wirenet apply` |
+| **Authorize & Persist Node Peer** | `wirenet peer add <NODE_PUBKEY>` |
 | **Active Tunnel Status & Latency** | `wirenet status` |
 | **Anti-DDoS Shield (Standard/Strict/Off)**| `wirenet shield [standard\|strict\|off]` |
 | **Check for Updates** | `wirenet check-update` |

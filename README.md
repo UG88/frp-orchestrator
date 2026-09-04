@@ -1,26 +1,15 @@
-# WireNet — Enterprise High-Performance Ingress & Anti-DDoS Shield
+# WireNet
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](WireNet/LICENSE)
-[![GitHub Repository](https://img.shields.io/badge/GitHub-UG88%2Fwirenet-blue.svg)](https://github.com/UG88/wirenet)
-[![Rust Engine](https://img.shields.io/badge/Engine-Async%20Tokio%20Rust-orange.svg)](WireNet/daemon/)
+WireNet is being reconstructed as a transparent, kernel-forwarded IPv4 ingress system for private Pterodactyl/Docker game-server backends. WireGuard provides the encrypted gateway-to-node transport; nftables, conntrack, and policy routing carry customer traffic. Customers must not need a plugin, proxy protocol, or special server configuration.
 
-Welcome to **WireNet**! This project replaces legacy reverse proxies (FRP) with native Linux kernel WireGuard tunneling and a memory-safe **Rust Daemon (`wirenet-daemon`)**.
+The historical implementation is not approved for deployment: it includes a competing TCP userspace proxy, mutable global firewall changes, fixed addressing, and a shared default control token. Do not follow archived one-command setup or troubleshooting instructions.
 
-👉 **All official code, documentation, and tools are located in the [`WireNet/`](WireNet/) folder.**
+The implementation repository and authoritative documentation are in [`WireNet/`](WireNet/):
 
----
+* [Current implementation inventory](WireNet/CURRENT_ARCHITECTURE.md)
+* [Gap analysis and component decisions](WireNet/WIRENET_GAP_ANALYSIS.md)
+* [Target architecture](WireNet/WIRENET_ARCHITECTURE.md)
+* [Safe migration plan](WireNet/WIRENET_MIGRATION.md)
+* [Networking, security, operations, and testing references](WireNet/WIRENET_SPEC.ai)
 
-## 🚀 Quick Start (1-Command Global Setup)
-
-```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/UG88/wirenet/main/install.sh)
-```
-
----
-
-## 📖 Full Documentation
-Please see **[`WireNet/README.md`](WireNet/README.md)** for:
-- Step-by-Step Installation Order (Gateway VPS ➔ Node VPS ➔ Key Auth ➔ Rust Daemon)
-- How to get **100% Real Player IPs** in Minecraft (Velocity / Paper / BungeeCord / Geyser)
-- Zero-Flicker Live Streaming TUI (`wirenet tui`)
-- Anti-DDoS Mitigation & Rate Limiting
+No production installation command is published until the replacement has passed the integration acceptance matrix.

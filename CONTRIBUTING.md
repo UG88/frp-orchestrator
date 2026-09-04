@@ -1,48 +1,5 @@
-# Contributing to FRP Orchestrator
+# Contributing to WireNet
 
-Thank you for your interest in contributing to the FRP Gateway Orchestrator!
+Read the [current architecture](WireNet/CURRENT_ARCHITECTURE.md), [gap analysis](WireNet/WIRENET_GAP_ANALYSIS.md), and [migration plan](WireNet/WIRENET_MIGRATION.md) before changing networking code.
 
----
-
-## 1. Development Environment Setup
-
-### Prerequisites
-- [Rust](https://rustup.rs/) (1.75+)
-- [Docker & Docker Compose](https://docs.docker.com/compose/)
-
-### Clone and Build
-```bash
-git clone https://github.com/UG88/frp-orchestrator.git
-cd frp-orchestrator
-
-# Build all workspace crates
-cargo build --workspace
-
-# Run all unit and integration tests
-cargo test --workspace
-```
-
----
-
-## 2. Running Local Development Stack
-
-A full multi-service simulation environment (Mock Pterodactyl, Mock Minecraft Java/Bedrock, FRPS Gateway, FRPC Agent, and Controller) is provided in `examples/docker-compose.yml`:
-
-```bash
-docker-compose -f examples/docker-compose.yml up --build
-```
-
----
-
-## 3. Pull Request Guidelines
-
-1. Ensure all tests pass:
-   ```bash
-   cargo test --workspace
-   ```
-2. Format code according to rustfmt standard:
-   ```bash
-   cargo fmt --all -- --check
-   cargo clippy --workspace -- -D warnings
-   ```
-3. Provide clear explanations for changes, especially any modifications touching network routing, zero-downtime hot-reloads, or port allocation mechanics.
+Changes must preserve the kernel-only normal data path, use validated declarative desired state, avoid unowned firewall mutations, and include tests appropriate to their risk. CI now checks formatting, Clippy, and the current unit suite from the nested crate; the network/integration test suite remains an early required milestone rather than evidence of production readiness.

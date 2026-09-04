@@ -13,6 +13,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Select Rust crate
+        run: echo "CARGO_WORKSPACE_DIR=WireNet/daemon" >> "$GITHUB_ENV"
 
       - name: Set up Rust
         run: |
@@ -21,10 +26,13 @@ jobs:
           rustup component add clippy rustfmt
 
       - name: Check code formatting
+        working-directory: ${{ env.CARGO_WORKSPACE_DIR }}
         run: cargo fmt --all -- --check
 
       - name: Run clippy
+        working-directory: ${{ env.CARGO_WORKSPACE_DIR }}
         run: cargo clippy --workspace --all-targets -- -D warnings
 
       - name: Run unit & integration tests
+        working-directory: ${{ env.CARGO_WORKSPACE_DIR }}
         run: cargo test --workspace --verbose
